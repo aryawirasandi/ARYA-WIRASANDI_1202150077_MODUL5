@@ -83,9 +83,35 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        ItemTouchHelper.SimpleCallback touchcall2 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                ListItem current = adapter.getData(position);
+                //apabila item di swipe ke arah kiri
+                if(direction==ItemTouchHelper.RIGHT){
+                    //remove item yang dipilih dengan mengenali todonya sebagai primary key
+                    if(dtbase.removedata(current.getTodo())){
+                        //menghapus data
+                        adapter.deleteData(position);
+                        //membuat snack bar dan pemberitahuan bahwa item sudah terhapus dengan durasi 1 sekon
+                        Snackbar.make(findViewById(R.id.coor), "Data Terhapus", 1000).show();
+                    }
+                }
+            }
+        };
         //menentukan itemtouchhelper untuk recycler view
         ItemTouchHelper touchhelp = new ItemTouchHelper(touchcall);
+        ItemTouchHelper touchelp2 = new ItemTouchHelper(touchcall2);
         touchhelp.attachToRecyclerView(rv);
+        touchelp2.attachToRecyclerView(rv);
     }
     //ketika menu pada activity di buat
     @Override
